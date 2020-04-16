@@ -41,7 +41,6 @@ public class MultiClient {
 				System.out.print("이름을 입력하세요:");
 				Scanner scanner = new Scanner(System.in);
 				s_name = nameException(scanner.nextLine());
-				System.out.println(s_name);
 				break;
 			}
 			catch(Exception e) {

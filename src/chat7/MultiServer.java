@@ -16,7 +16,7 @@ import java.util.StringTokenizer;
 
 public class MultiServer extends IConnectImpl{
 	
-	static String fName = null;//귓속말 고정을 위해 만들었는데 잘못 만든듯
+	
 	static ServerSocket serverSocket = null;
 	static Socket socket = null;
 	Map<String, PrintWriter> clientMap;
@@ -62,9 +62,12 @@ public class MultiServer extends IConnectImpl{
 	//내부클래스
 	class MultiServerT extends Thread{
 		
+		
+		
 		Socket socket;
 		PrintWriter out = null;
 		BufferedReader in = null;
+		
 		public MultiServerT(Socket socket) {
 			this.socket = socket;
 			try {
@@ -83,7 +86,7 @@ public class MultiServer extends IConnectImpl{
 			// "";으로 해둔 이유가 있나?
 			String name = "";
 			String s = "";
-			
+			String fName = "";
 			try {
 				name = in.readLine();
 				name = URLDecoder.decode(name, "UTF-8");
@@ -151,7 +154,7 @@ public class MultiServer extends IConnectImpl{
 //										out.println("\n=wName > " + wName + "=\n");
 										//스플릿 3번째 칸부터 클라이언트가 보내는 메시지 내용.
 										String ws = s.split(" ", 3)[2];
-										System.out.printf("%s가 %s에게 귓속말 >> %s", name, wName, ws);
+										System.out.printf("%s가 %s에게 귓속말 >> %s\n", name, wName, ws);
 										whisperMsg(wName, ws, name);
 										
 										//jdbc
@@ -180,17 +183,19 @@ public class MultiServer extends IConnectImpl{
 							//토큰이 두개일시 진임. /to ooo 일 경우에만 진입함. 귓속말 고정을 위해 만듬
 							//근데 미완성이고 너무 조잡해짐
 							} else if(token.countTokens() == 2 )	{
-								out.println("고정 진입");
-								
+//								out.println("고정 진입");
+//								String fName;
 								while(it.hasNext()) {
 									fName = it.next();
 									if(s.split(" ", 2)[1].equals(fName)) {
 										wCheck = false;
 										out.println(fName + "에게 귓속말 고정을 할까요?\n(고정하시려면 yes, 아니면 아무키나 눌러주세요)");
+										fName = test(fName);
 										String wf = in.readLine();
 										if(wf.equalsIgnoreCase("YES")) {
-											out.println("고정");
+											out.println(fName + "에게 고정합니다.");
 											fixCheck = true;
+											break;
 										} else {
 											out.println("귓속말 고정을 취소합니다.");
 										}
@@ -239,9 +244,8 @@ public class MultiServer extends IConnectImpl{
 //						int affected = psmt.executeUpdate();
 //						System.out.println(affected + "행이 입력되었습니다.");
 					} else if(fixCheck) {
-						out.println("고정 해제>/unlock");
-						out.println(fName);
-						System.out.printf("%s가 %s에게 귓속말 >> %s", name, fName, s);
+						out.println(fName + "에게 귓속말 고정중\n(고정 해제>/unlock)");
+						System.out.printf("%s가 %s에게 귓속말 >> %s\n", name, fName, s);
 						whisperMsg(fName, s, name);
 						
 						
@@ -269,6 +273,10 @@ public class MultiServer extends IConnectImpl{
 			}
 		}
 		
+		public String test(String name) {
+			System.out.println(name);
+			return name;
+		}
 		/**
 		 * 전체 메세지 메소드
 		 * name = 메세지 입력 한 사람의 이름
