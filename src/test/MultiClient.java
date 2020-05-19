@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Scanner;
 
 public class MultiClient {
@@ -27,14 +29,14 @@ public class MultiClient {
 
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(
-					new InputStreamReader(socket.getInputStream()));
+					new InputStreamReader(socket.getInputStream(), "UTF-8"));
 
-			out.println(s_name);
+			out.println(URLEncoder.encode(s_name, "UTF-8"));
 
 			while(out!=null) {
 				try {
-					if(in!=null) {
-						System.out.println("Receive : "+ in.readLine());
+					if(in != null) {
+						System.out.println("Receive : "+ URLDecoder.decode(in.readLine(), "UTF-8"));
 					}
 
 					String s2 = scanner.nextLine();
@@ -42,7 +44,7 @@ public class MultiClient {
 						break;
 					}
 					else {
-						out.println(s2);
+						out.println(URLEncoder.encode(s2, "UTF-8"));
 					}
 				}
 				catch (Exception e) {
